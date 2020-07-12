@@ -271,7 +271,6 @@ workflow GATKSVPipelineSingleSample {
 
     File rmsk
     File segdups
-    Int tabix_retries = 5
 
     Int? min_large_pesr_call_size_for_filtering
     Float? min_large_pesr_depth_overlap_fraction
@@ -383,6 +382,16 @@ workflow GATKSVPipelineSingleSample {
     Float? max_ref_panel_carrier_freq
 
     ############################################################
+    ## Single sample metrics
+    ############################################################
+
+    File? baseline_cleaned_vcf
+    File? baseline_final_vcf
+    File? baseline_genotyped_pesr_vcf
+    File? baseline_genotyped_depth_vcf
+    File? baseline_non_genotyped_unique_depth_calls_vcf
+
+    ############################################################
     ## QC
     ############################################################
 
@@ -491,6 +500,9 @@ workflow GATKSVPipelineSingleSample {
       ped_file=ref_ped_file,
       genome_file=genome_file,
       primary_contigs_fai=primary_contigs_fai,
+      ref_fasta=reference_fasta,
+      ref_fasta_index=reference_index,
+      ref_dict=reference_dict,
       counts=[select_first([Module00a.coverage_counts])],
       ref_panel_bincov_matrix=ref_panel_bincov_matrix,
       PE_files=[select_first([Module00a.pesr_disc])],
@@ -723,6 +735,7 @@ workflow GATKSVPipelineSingleSample {
       ped_file = combined_ped_file,
       vcf = FilterLargePESRCallsWithoutRawDepthSupport.out,
       autosome_contigs = autosome_file,
+      ref_dict=reference_dict,
       split_size = genotyping_n_per_split,
       algorithm = "PESR",
       allosome_contigs = allosome_file,
@@ -731,7 +744,6 @@ workflow GATKSVPipelineSingleSample {
       male_samples = SamplesList.male_samples,
       female_samples = SamplesList.female_samples,
       run_common = false,
-      tabix_retries = tabix_retries,
       sv_base_mini_docker = sv_base_mini_docker,
       linux_docker = linux_docker,
       sv_pipeline_docker = sv_pipeline_docker,
@@ -773,6 +785,7 @@ workflow GATKSVPipelineSingleSample {
       discfile=Module00c.merged_PE,
       splitfile=Module00c.merged_SR,
       famfile=combined_ped_file,
+      ref_dict=reference_dict,
       n_RD_genotype_bins=n_RD_genotype_bins,
       genotype_pesr_pesr_sepcutoff=genotype_pesr_pesr_sepcutoff,
       genotype_pesr_depth_sepcutoff=genotype_pesr_depth_sepcutoff,
@@ -823,6 +836,7 @@ workflow GATKSVPipelineSingleSample {
       pesr_vcfs=[ConvertCNVsWithoutDepthSupportToBNDs.out_vcf],
       depth_vcfs=[Module04.genotyped_depth_vcf],
       contig_list=primary_contigs_fai,
+      ref_dict=reference_dict,
 
       max_shards_per_chrom=clean_vcf_max_shards_per_chrom,
       min_variants_per_shard=clean_vcf_min_variants_per_shard,

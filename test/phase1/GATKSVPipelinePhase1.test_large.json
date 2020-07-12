@@ -6,7 +6,7 @@
   "GATKSVPipelinePhase1.sv_pipeline_rdtest_docker": "gatksv/sv-pipeline-rdtest:b3af2e3",
   "GATKSVPipelinePhase1.sv_pipeline_qc_docker": "epiercehoffman/sv-pipeline-qc:eph_03qc_variables-e597d85",
   "GATKSVPipelinePhase1.linux_docker" : "ubuntu:18.04",
-  "GATKSVPipelinePhase1.cnmops_docker": "gatksv/cnmops:b3af2e3",
+  "GATKSVPipelinePhase1.cnmops_docker": "mwalker174/cnmops:mw-gatk-tabix-e3d3b0d",
   "GATKSVPipelinePhase1.gatk_docker" : "broadinstitute/gatk:4.1.2.0",
   "GATKSVPipelinePhase1.condense_counts_docker" : "gatksv/gatk:condensecounts-7396ae99aaab07e29c92b509a6515508fbe68158",
   

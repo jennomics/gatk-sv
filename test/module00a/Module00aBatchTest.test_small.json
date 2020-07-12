@@ -14,8 +14,8 @@
     "SM-HXUD2"
   ],
 
-  "Module00aBatchTest.PlotMetrics.sv_pipeline_base_docker": "gatksv/sv-pipeline-base:b3af2e3",
-  "Module00aBatchTest.Module00aBatchMetrics.sv_pipeline_base_docker": "gatksv/sv-pipeline-base:b3af2e3",
+  "Module00aBatchTest.PlotMetrics.sv_pipeline_base_docker": "mwalker174/sv-pipeline-base:mw-gatk-tabix-e3d3b0d",
+  "Module00aBatchTest.Module00aBatchMetrics.sv_pipeline_base_docker": "mwalker174/sv-pipeline-base:mw-gatk-tabix-e3d3b0d",
   "Module00aBatchTest.Module00aBatchMetrics.linux_docker" : "ubuntu:18.04",
   "Module00aBatchTest.Module00aBatchMetrics.contig_list" : "gs://gcp-public-data--broad-references/hg38/v0/sv-resources/resources/v1/primary_contigs.list",
   "Module00aBatchTest.Module00aBatchMetrics.contig_index" : "gs://gcp-public-data--broad-references/hg38/v0/sv-resources/resources/v1/contig.fai",
