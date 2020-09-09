@@ -167,6 +167,7 @@ task PETest {
     String prefix
     Int tabix_retries
     String sv_pipeline_docker
+    Int disk_gb_baseline = 10
     RuntimeAttr? runtime_attr_override
   }
 
@@ -179,10 +180,11 @@ task PETest {
     }
   }
 
+  Int disk_gb = disk_gb_baseline + size([vcf, discfile, medianfile, discfile_idx, whitelist], "GiB")
   RuntimeAttr default_attr = object {
     cpu_cores: 1, 
     mem_gb: 3.75,
-    disk_gb: 10,
+    disk_gb: disk_gb,
     boot_disk_gb: 10,
     preemptible_tries: 3,
     max_retries: 1
