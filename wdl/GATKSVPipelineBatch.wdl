@@ -158,6 +158,8 @@ workflow GATKSVPipelineBatch {
       reference_dict=reference_dict,
       BAF_files=baf_files,
       counts=counts_files_,
+      bincov_matrix=Module00b.bincov_matrix,
+      bincov_matrix_index=Module00b.bincov_matrix_index,
       PE_files=pe_files_,
       SR_files=sr_files_,
       delly_vcfs=delly_vcfs_,

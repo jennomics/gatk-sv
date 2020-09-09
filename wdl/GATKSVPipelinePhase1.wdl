@@ -45,6 +45,8 @@ workflow GATKSVPipelinePhase1 {
     Array[File] PE_files
     Array[File] SR_files
     Array[File] counts
+    File? bincov_matrix
+    File? bincov_matrix_index
     File inclusion_bed
 
     # BAF generation if BAF_files unavailable
@@ -244,6 +246,8 @@ workflow GATKSVPipelinePhase1 {
       mei_bed = mei_bed,
       inclusion_bed = inclusion_bed,
       counts = counts,
+      bincov_matrix = bincov_matrix,
+      bincov_matrix_index = bincov_matrix_index,
       contig_ploidy_model_tar = contig_ploidy_model_tar,
       gcnv_model_tars = gcnv_model_tars,
       gatk4_jar_override = gatk4_jar_override,

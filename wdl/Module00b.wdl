@@ -153,5 +153,8 @@ workflow Module00b {
     File WGD_dist = WGD.WGD_dist
     File WGD_matrix = WGD.WGD_matrix
     File WGD_scores = WGD.WGD_scores
+
+    File bincov_matrix = MakeBincovMatrix.merged_bincov
+    File bincov_matrix_index = MakeBincovMatrix.merged_bincov_idx
   }
 }
