@@ -91,7 +91,7 @@ task BAFTest {
     }
   }
 
-  Int disk_gb = disk_gb_baseline + size([bed, baf_metrics, baf_metrics_idx], "GiB")
+  Int disk_gb = disk_gb_baseline + ceil(size([bed, baf_metrics, baf_metrics_idx], "GiB"))
   RuntimeAttr default_attr = object {
     cpu_cores: 1, 
     mem_gb: 3.75,
@@ -156,7 +156,7 @@ task MergeBAFSplits {
     RuntimeAttr? runtime_attr_override
   }
 
-  Int disk_gb = disk_gb_baseline + 2 * size(stats, "GiB")
+  Int disk_gb = disk_gb_baseline + ceil(2 * size(stats, "GiB"))
   RuntimeAttr default_attr = object {
     cpu_cores: 1, 
     mem_gb: 3.75,
@@ -208,7 +208,7 @@ task SplitBafVcf {
     RuntimeAttr? runtime_attr_override
   }
 
-  Int disk_gb = disk_gb_baseline + size(vcf, "GiB")
+  Int disk_gb = disk_gb_baseline + ceil(size(vcf, "GiB"))
   RuntimeAttr default_attr = object {
     cpu_cores: 1, 
     mem_gb: 3.75,

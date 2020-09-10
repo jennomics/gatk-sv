@@ -180,7 +180,7 @@ task PETest {
     }
   }
 
-  Int disk_gb = disk_gb_baseline + size([vcf, discfile, medianfile, discfile_idx, whitelist], "GiB")
+  Int disk_gb = disk_gb_baseline + ceil(size([vcf, discfile, medianfile, discfile_idx, whitelist], "GiB"))
   RuntimeAttr default_attr = object {
     cpu_cores: 1, 
     mem_gb: 3.75,

@@ -185,7 +185,7 @@ task SRTest {
     }
   }
 
-  Int disk_gb = disk_gb_baseline + size([vcf, splitfile, medianfile, splitfile_idx, whitelist], "GiB")
+  Int disk_gb = disk_gb_baseline + ceil(size([vcf, splitfile, medianfile, splitfile_idx, whitelist], "GiB"))
   RuntimeAttr default_attr = object {
     cpu_cores: 1, 
     mem_gb: 3.75,
