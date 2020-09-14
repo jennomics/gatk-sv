@@ -185,7 +185,10 @@ task SRTest {
     }
   }
 
-  Int disk_gb = disk_gb_baseline + ceil(size([vcf, splitfile, medianfile, splitfile_idx, whitelist], "GiB"))
+  Int disk_gb = disk_gb_baseline + ceil(
+                                      size([vcf, medianfile, whitelist], "GiB")
+                                      + 2 * size([splitfile, splitfile_idx], "GiB")
+                                   )
   RuntimeAttr default_attr = object {
     cpu_cores: 1, 
     mem_gb: 3.75,
@@ -223,6 +226,7 @@ task SRTest {
     cmp --silent SR_1.txt.gz SR_2.txt.gz || exit 1
     
     mv SR_1.txt.gz SR.txt.gz
+    rm SR_2.txt.gz
     tabix -b 2 -e 2 SR.txt.gz
 
     svtk sr-test -w 50 --log --index SR.txt.gz.tbi ~{common_arg} --medianfile ~{medianfile} --samples ~{whitelist} ~{vcf} SR.txt.gz ~{prefix}.stats

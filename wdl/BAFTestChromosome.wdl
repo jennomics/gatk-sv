@@ -91,7 +91,10 @@ task BAFTest {
     }
   }
 
-  Int disk_gb = disk_gb_baseline + ceil(size([bed, baf_metrics, baf_metrics_idx], "GiB"))
+  Int disk_gb = disk_gb_baseline + ceil(
+                                      size(bed, "GiB")
+                                      + 2 * size([baf_metrics, baf_metrics_idx], "GiB")
+                                   )
   RuntimeAttr default_attr = object {
     cpu_cores: 1, 
     mem_gb: 3.75,
@@ -131,6 +134,7 @@ task BAFTest {
     cmp --silent local_baf_1.bed.gz local_baf_2.bed.gz || exit 1
 
     mv local_baf_1.bed.gz local_baf.bed.gz
+    rm local_baf_2.bed.gz
     tabix -b2 local_baf.bed.gz
     svtk baf-test ~{bed} local_baf.bed.gz --batch batch.key > ~{prefix}.metrics
   

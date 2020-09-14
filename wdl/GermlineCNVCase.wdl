@@ -364,7 +364,6 @@ task GermlineCNVCallerCaseMode {
         read_count_files_list=~{write_lines(read_count_files)}
         grep gz$ "$read_count_files_list" | xargs -l1 -P0 gunzip
         sed 's/\.gz$//' "$read_count_files_list" \
-            | shuf --random-source=/dev/urandom \
             | awk '{print "--input "$0}' \
             > read_count_files.args
 

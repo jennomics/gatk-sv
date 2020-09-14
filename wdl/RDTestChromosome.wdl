@@ -150,11 +150,14 @@ task RDTest {
     }
   }
 
-  Int disk_gb = disk_gb_baseline + ceil(size([bed, coveragefile, coveragefile_idx, medianfile, ped_file, whitelist], "GiB"))
+  Int disk_gb = disk_gb_baseline + ceil(
+                                    size([bed, medianfile, ped_file, whitelist], "GiB")
+                                    + 2 * size([coveragefile, coveragefile_idx], "GiB")
+                                 )
   RuntimeAttr default_attr = object {
     cpu_cores: 1, 
     mem_gb: 3.75,
-    disk_gb: 10,
+    disk_gb: disk_gb,
     boot_disk_gb: 10,
     preemptible_tries: 3,
     max_retries: 1
@@ -187,6 +190,7 @@ task RDTest {
     cmp --silent local_coverage_1.bed.gz local_coverage_2.bed.gz || exit 1
     
     mv local_coverage_1.bed.gz local_coverage.bed.gz
+    rm local_coverage_2.bed.gz
     tabix -p bed local_coverage.bed.gz;
 
     Rscript /opt/RdTest/RdTest.R \

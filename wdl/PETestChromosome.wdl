@@ -180,7 +180,11 @@ task PETest {
     }
   }
 
-  Int disk_gb = disk_gb_baseline + ceil(size([vcf, discfile, medianfile, discfile_idx, whitelist], "GiB"))
+  Int disk_gb = disk_gb_baseline + ceil(
+                                      size([vcf, medianfile, whitelist], "GiB")
+                                      + 2 * size([discfile, discfile_idx], "GiB")
+                                   )
+
   RuntimeAttr default_attr = object {
     cpu_cores: 1, 
     mem_gb: 3.75,
@@ -218,6 +222,7 @@ task PETest {
     cmp --silent PE_1.txt.gz PE_2.txt.gz || exit 1
     
     mv PE_1.txt.gz PE.txt.gz
+    rm PE_2.txt.gz
     tabix -b 2 -e 2 PE.txt.gz
 
     svtk pe-test -o ~{window} --index PE.txt.gz.tbi ~{common_arg} --medianfile ~{medianfile} --samples ~{whitelist} ~{vcf} PE.txt.gz ~{prefix}.stats
