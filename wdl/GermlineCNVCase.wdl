@@ -332,7 +332,7 @@ task GermlineCNVCallerCaseMode {
 
     RuntimeAttr default_attr = object {
       cpu_cores: 4,
-      mem_gb: 10,
+      mem_gb: 13,
       disk_gb: disk_gb,
       boot_disk_gb: 10,
       preemptible_tries: 3,
