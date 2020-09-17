@@ -411,12 +411,12 @@ task GermlineCNVCallerCaseMode {
                 --disable-annealing ~{default="false" disable_annealing}
         }
 
-        { # Try to run gcnv case mode. Rarely, a bad initial seed results in NaN errors...
+        {
+            # Try to run gcnv case mode. Rarely, a bad initial seed results in NaN errors...
             run_gcnv_case
-        } || { # shuffle input arguments in a deterministic manner, resulting in a new seed
-            mv read_count_files.args orig_read_count_files.args
-            shuf orig_read_count_files.args --random-source=<(get_seeded_random 42) \
-              > read_count_files.args
+        } || {
+            # shuffle input arguments in a deterministic manner, resulting in a new seed
+            shuf --random-source=<(get_seeded_random 42) --output=read_count_files.args read_count_files.args
             # run gcnv case mode one more time
             run_gcnv_case
         }
