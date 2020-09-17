@@ -332,7 +332,7 @@ task GermlineCNVCallerCaseMode {
 
     RuntimeAttr default_attr = object {
       cpu_cores: 4,
-      mem_gb: 13,
+      mem_gb: 10,
       disk_gb: disk_gb,
       boot_disk_gb: 10,
       preemptible_tries: 3,
@@ -367,46 +367,63 @@ task GermlineCNVCallerCaseMode {
             | awk '{print "--input "$0}' \
             > read_count_files.args
 
-        gatk --java-options "-Xmx~{command_mem_mb}m"  GermlineCNVCaller \
-            --run-mode CASE \
-            --arguments_file read_count_files.args \
-            --contig-ploidy-calls contig-ploidy-calls-dir \
-            --model gcnv-model \
-            --output ~{output_dir_} \
-            --output-prefix case \
-            --verbosity DEBUG \
-            --p-alt ~{default="1e-6" p_alt} \
-            --cnv-coherence-length ~{default="10000.0" cnv_coherence_length} \
-            --max-copy-number ~{default="5" max_copy_number} \
-            --mapping-error-rate ~{default="0.01" mapping_error_rate} \
-            --sample-psi-scale ~{default="0.0001" sample_psi_scale} \
-            --depth-correction-tau ~{default="10000.0" depth_correction_tau} \
-            --copy-number-posterior-expectation-mode ~{default="HYBRID" copy_number_posterior_expectation_mode} \
-            --active-class-padding-hybrid-mode ~{default="50000" active_class_padding_hybrid_mode} \
-            --learning-rate ~{default="0.05" learning_rate} \
-            --adamax-beta-1 ~{default="0.9" adamax_beta_1} \
-            --adamax-beta-2 ~{default="0.99" adamax_beta_2} \
-            --log-emission-samples-per-round ~{default="50" log_emission_samples_per_round} \
-            --log-emission-sampling-median-rel-error ~{default="0.005" log_emission_sampling_median_rel_error} \
-            --log-emission-sampling-rounds ~{default="10" log_emission_sampling_rounds} \
-            --max-advi-iter-first-epoch ~{default="5000" max_advi_iter_first_epoch} \
-            --max-advi-iter-subsequent-epochs ~{default="100" max_advi_iter_subsequent_epochs} \
-            --min-training-epochs ~{default="10" min_training_epochs} \
-            --max-training-epochs ~{default="100" max_training_epochs} \
-            --initial-temperature ~{default="2.0" initial_temperature} \
-            --num-thermal-advi-iters ~{default="2500" num_thermal_advi_iters} \
-            --convergence-snr-averaging-window ~{default="500" convergence_snr_averaging_window} \
-            --convergence-snr-trigger-threshold ~{default="0.1" convergence_snr_trigger_threshold} \
-            --convergence-snr-countdown-window ~{default="10" convergence_snr_countdown_window} \
-            --max-calling-iters ~{default="10" max_calling_iters} \
-            --caller-update-convergence-threshold ~{default="0.001" caller_update_convergence_threshold} \
-            --caller-internal-admixing-rate ~{default="0.75" caller_internal_admixing_rate} \
-            --caller-external-admixing-rate ~{default="1.00" caller_external_admixing_rate} \
-            --disable-annealing ~{default="false" disable_annealing}
+        function get_seeded_random() {
+            SEED="$1"
+            openssl enc -aes-256-ctr -pass pass:"$SEED" -nosalt </dev/zero 2>/dev/null
+        }
+
+        function run_gcnv_case() {
+            gatk --java-options "-Xmx~{command_mem_mb}m"  GermlineCNVCaller \
+                --run-mode CASE \
+                --arguments_file read_count_files.args \
+                --contig-ploidy-calls contig-ploidy-calls-dir \
+                --model gcnv-model \
+                --output ~{output_dir_} \
+                --output-prefix case \
+                --verbosity DEBUG \
+                --p-alt ~{default="1e-6" p_alt} \
+                --cnv-coherence-length ~{default="10000.0" cnv_coherence_length} \
+                --max-copy-number ~{default="5" max_copy_number} \
+                --mapping-error-rate ~{default="0.01" mapping_error_rate} \
+                --sample-psi-scale ~{default="0.0001" sample_psi_scale} \
+                --depth-correction-tau ~{default="10000.0" depth_correction_tau} \
+                --copy-number-posterior-expectation-mode ~{default="HYBRID" copy_number_posterior_expectation_mode} \
+                --active-class-padding-hybrid-mode ~{default="50000" active_class_padding_hybrid_mode} \
+                --learning-rate ~{default="0.05" learning_rate} \
+                --adamax-beta-1 ~{default="0.9" adamax_beta_1} \
+                --adamax-beta-2 ~{default="0.99" adamax_beta_2} \
+                --log-emission-samples-per-round ~{default="50" log_emission_samples_per_round} \
+                --log-emission-sampling-median-rel-error ~{default="0.005" log_emission_sampling_median_rel_error} \
+                --log-emission-sampling-rounds ~{default="10" log_emission_sampling_rounds} \
+                --max-advi-iter-first-epoch ~{default="5000" max_advi_iter_first_epoch} \
+                --max-advi-iter-subsequent-epochs ~{default="100" max_advi_iter_subsequent_epochs} \
+                --min-training-epochs ~{default="10" min_training_epochs} \
+                --max-training-epochs ~{default="100" max_training_epochs} \
+                --initial-temperature ~{default="2.0" initial_temperature} \
+                --num-thermal-advi-iters ~{default="2500" num_thermal_advi_iters} \
+                --convergence-snr-averaging-window ~{default="500" convergence_snr_averaging_window} \
+                --convergence-snr-trigger-threshold ~{default="0.1" convergence_snr_trigger_threshold} \
+                --convergence-snr-countdown-window ~{default="10" convergence_snr_countdown_window} \
+                --max-calling-iters ~{default="10" max_calling_iters} \
+                --caller-update-convergence-threshold ~{default="0.001" caller_update_convergence_threshold} \
+                --caller-internal-admixing-rate ~{default="0.75" caller_internal_admixing_rate} \
+                --caller-external-admixing-rate ~{default="1.00" caller_external_admixing_rate} \
+                --disable-annealing ~{default="false" disable_annealing}
+        }
+
+        { # Try to run gcnv case mode. Rarely, a bad initial seed results in NaN errors...
+            run_gcnv_case
+        } || { # shuffle input arguments in a deterministic manner, resulting in a new seed
+            mv read_count_files.args orig_read_count_files.args
+            shuf orig_read_count_files.args --random-source=<(get_seeded_random 42) \
+              > read_count_files.args
+            # run gcnv case mode one more time
+            run_gcnv_case
+        }
 
         tar c -C ~{output_dir_}/case-tracking . | gzip -1 > case-gcnv-tracking-~{scatter_index}.tar.gz
 
-        # tar output calls, ensuring output files are numbered in the same order as sample list
+        # tar output calls, ensuring output files are numbered in the same order as original sample list
         NUM_SAMPLES=~{num_samples}
         NUM_DIGITS=${#NUM_SAMPLES}
         CURRENT_SAMPLE=0
