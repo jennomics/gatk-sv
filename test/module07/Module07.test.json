@@ -18,5 +18,5 @@
   "Module07.prefix" :       "Talkowski_SV_PCR-free_WGS_144",
 
   "Module07.sv_base_mini_docker": "gatksv/sv-base-mini:b3af2e3",
-  "Module07.sv_pipeline_docker": "cwhelan/sv-pipeline:cw_external_af_annotation_565a1e"
+  "Module07.sv_pipeline_docker": "epiercehoffman/sv-pipeline:eph_records_match_by_chrom_mergevcfs-3ea8aa7"
 }
