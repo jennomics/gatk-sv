@@ -1,5 +1,7 @@
 # GATK-SV
 
+# Modified input files to run on AWS
+
 A structural variation discovery pipeline for Illumina short-read whole-genome sequencing (WGS) data.
 
 ## Table of Contents
